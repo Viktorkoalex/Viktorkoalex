@@ -1,0 +1,2384 @@
+{
+	"info": {
+		"_postman_id": "d488c2b0-a6c3-47e8-8514-456a1f8d5c3a",
+		"name": "WMS HOMEWORK DZ",
+		"description": "Приемка и размещение товаров на складе.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44406212"
+	},
+	"item": [
+		{
+			"name": "Авторизация пользователя",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let bearerToken=response.token;\r",
+							"pm.environment.set(\"bearerToken\", bearerToken );\r",
+							"console.log(\"Авторизация выполена успешно\")\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				},
+				"description": "# Документация для API запроса авторизации\n\n## `POST /wms/v1/auth/login`\n\nЭтот эндпоинт используется для аутентификации пользователя в системе WMS (Warehouse Management System).\n\n### Базовый URL\n\n```\nhttps://sklad.testerhub.ru\n\n ```\n\n### Заголовки запроса (Headers)\n\n- `Content-Type`: `application/json`\n    \n- `Accept`: `application/json`\n    \n\n### Параметры запроса (Request Body)\n\n``` json\n{\n  \"username\": \"string\",\n  \"password\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Обязательный | Описание |\n| --- | --- | --- | --- |\n| username | string | Да | Логин пользователя |\n| password | string | Да | Пароль пользователя |\n\n### Пример запроса\n\n``` bash\ncurl -X POST \"https://sklad.testerhub.ru/wms/v1/auth/login\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -d '{\n    \"username\": \"your_username\",\n    \"password\": \"your_password\"\n  }'\n\n ```\n\n### Ответы (Responses)\n\n**Успешная аутентификация (200 OK):**\n\n``` json\n{\n  \"token\": \"string\",\n  \"expires_in\": 0,\n  \"refresh_token\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| token | string | JWT токен для доступа к API |\n| expires_in | integer | Время жизни токена в секундах |\n| refresh_token | string | Токен для обновления access token |\n\n**Ошибка аутентификации (401 Unauthorized):**\n\n``` json\n{\n  \"error\": \"string\",\n  \"error_description\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| error | string | Код ошибки |\n| error_description | string | Описание ошибки |\n\n### Возможные коды ошибок\n\n| Код ошибки | Описание |\n| --- | --- |\n| invalid_credentials | Неверный логин или пароль |\n| account_disabled | Учетная запись отключена |\n| account_locked | Учетная запись заблокирована |\n\n### Примечания\n\n1. Полученный токен необходимо включать в заголовок `Authorization` последующих запросов к API в формате:  \n    `Authorization: Bearer`\n    \n2. Токен имеет ограниченное время жизни, по истечении которого необходимо использовать refresh_token для получения нового токена.\n    \n3. Не храните логины и пароли в открытом виде в коде приложения."
+			},
+			"response": [
+				{
+					"name": "Успешная авторизация",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"token\": \"<string>\",\n  \"user\": {\n    \"id\": \"<string>\",\n    \"username\": \"<string>\",\n    \"email\": \"<string>\",\n    \"role\": \"<string>\"\n  }\n}"
+				},
+				{
+					"name": "Неверные учетные данные",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"<string>\",\n  \"password\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Создать новую накладную приёмки",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Генерация данных\r",
+							"try {\r",
+							"  \r",
+							"let timestamp = new Date().getTime();\r",
+							"pm.collectionVariables.set(`invoiceNumber`, `INVOICE-${timestamp}`);\r",
+							"    \r",
+							"    const items = [];\r",
+							"    \r",
+							"    for (let i = 0; i < 1; i++) {\r",
+							"        items.push({\r",
+							"            id: `ID-${i+1}`,\r",
+							"            productId: `PID-${Math.random().toString(36).substring(2, 10)}`,\r",
+							"            sku: `SKU-${i.toString().padStart(4, '0')}`,\r",
+							"            name: `Product ${i+1}`,\r",
+							"            expectedQuantity: Math.floor(Math.random() * 10) + 1,\r",
+							"            barcode: (1000000000000 + Math.floor(Math.random() * 9000000000000)).toString()\r",
+							"        });\r",
+							"    }\r",
+							"pm.collectionVariables.set(\"items\", JSON.stringify(items));\r",
+							"pm.collectionVariables.set(\"Barcode\", Math.floor(Math.random() * 9000000000000));\r",
+							"\r",
+							"    \r",
+							"    console.log(\"Данные успешно сгенерированы\");\r",
+							"} catch (error) {\r",
+							"    console.error(\"Ошибка генерации:\", error);\r",
+							"   \r",
+							"   // pm.collectionVariables.set(\"invoiceNumber\", \"INV-FALLBACK\");\r",
+							"  //  pm.collectionVariables.set(\"items\", \"[]\");\r",
+							"  //  pm.collectionVariables.set(\"Barcode\", \"0\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"let invoiceid=response._id;\r",
+							"pm.collectionVariables.set(\"invoiceid\", invoiceid );\r",
+							"console.log(\"Полученный ответ:\", response._id);\r",
+							"\r",
+							"if (response && Array.isArray(response.items)) {\r",
+							"    // Перебираем все товары\r",
+							"    response.items.forEach((item, index) => {\r",
+							"        if (item.id) {\r",
+							"            // Создаем уникальные имена переменных (itemId1, itemId2...)\r",
+							"            pm.collectionVariables.set(`itemId${index + 1}`, item.id);\r",
+							"        }\r",
+							"    });\r",
+							"        console.log(`Saved ${response.items.length} _id to collection variables`);\r",
+							"  \r",
+							"}\r",
+							"if (response && Array.isArray(response.items)) {\r",
+							"    // Перебираем все товары\r",
+							"    response.items.forEach((item, index) => {\r",
+							"        if (item.barcode) {\r",
+							"            // Создаем уникальные имена переменных (itemId1, itemId2...)\r",
+							"            pm.collectionVariables.set(`barcode${index + 1}`, item.barcode);\r",
+							"        }\r",
+							"    });  \r",
+							"    console.log(`Saved ${response.items.length} barcodes to collection variables`);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"invoiceNumber\": \"{{invoiceNumber}}\",\n    \"items\": {{items}},\n\"barcode\": \"{{Barcode}}\"\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/receiving",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"receiving"
+					]
+				},
+				"description": "Создает новую накладную для приёмки товаров на склад\n\n# Документация для API запроса получения данных (Receiving)\n\n## `GET /wms/v1/receiving`\n\nЭтот эндпоинт используется для получения информации о приемках товаров на склад.\n\n### Базовый URL\n\n```\nhttps://sklad.testerhub.ru\n\n ```\n\n### Авторизация\n\nТребуется JWT токен, полученный через `/wms/v1/auth/login`  \nФормат заголовка:\n\n```\nAuthorization: Bearer <ваш_токен>\n\n ```\n\n### Заголовки запроса (Headers)\n\n- `Authorization`: `Bearer <токен>`\n    \n- `Accept`: `application/json`\n    \n\n### Параметры запроса (Query Parameters)\n\n| Параметр | Тип | Обязательный | Описание | Пример |\n| --- | --- | --- | --- | --- |\n| dateFrom | string | Нет | Начальная дата периода (YYYY-MM-DD) | 2023-01-01 |\n| dateTo | string | Нет | Конечная дата периода (YYYY-MM-DD) | 2023-12-31 |\n| status | string | Нет | Статус приемки (NEW, IN_PROGRESS, COMPLETED) | COMPLETED |\n| limit | integer | Нет | Лимит записей (по умолчанию 100) | 50 |\n| offset | integer | Нет | Смещение (для пагинации) | 0 |\n\n### Пример запроса\n\n``` bash\ncurl -X GET \"https://sklad.testerhub.ru/wms/v1/receiving?dateFrom=2023-01-01&dateTo=2023-12-31&status=COMPLETED&limit=10\" \\\n  -H \"Authorization: Bearer ваш_токен\" \\\n  -H \"Accept: application/json\"\n\n ```\n\n### Ответы (Responses)\n\n**Успешный запрос (200 OK):**\n\n``` json\n{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"receiving_number\": \"string\",\n      \"supplier\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"expected_date\": \"string\",\n      \"actual_date\": \"string\",\n      \"status\": \"string\",\n      \"items\": [\n        {\n          \"sku\": \"string\",\n          \"name\": \"string\",\n          \"expected_qty\": 0,\n          \"received_qty\": 0\n        }\n      ]\n    }\n  ],\n  \"total\": 0,\n  \"limit\": 0,\n  \"offset\": 0\n}\n\n ```\n\n| Параметр (вложенный) | Тип | Описание |\n| --- | --- | --- |\n| id | string | Уникальный ID приемки |\n| receiving_number | string | Номер приемки |\n| supplier.id | string | ID поставщика |\n| supplier.name | string | Название поставщика |\n| expected_date | string | Планируемая дата приемки (ISO) |\n| actual_date | string | Фактическая дата приемки (ISO) |\n| status | string | Статус приемки |\n| items.sku | string | Артикул товара |\n| items.name | string | Название товара |\n| items.expected_qty | integer | Ожидаемое количество |\n| items.received_qty | integer | Фактически принятое количество |\n| total | integer | Всего записей |\n| limit | integer | Лимит записей в ответе |\n| offset | integer | Смещение |\n\n**Ошибки:**\n\n- `401 Unauthorized` - Неверный или отсутствующий токен\n    \n- `403 Forbidden` - Нет доступа к данному ресурсу\n    \n- `500 Internal Server Error` - Ошибка сервера\n    \n\n### Дополнительная информация\n\n1. Для работы с большим объемом данных используйте пагинацию (limit/offset)\n    \n2. Статусы приемки:\n    \n    - `NEW` - Новая приемка\n        \n    - `IN_PROGRESS` - В процессе\n        \n    - `COMPLETED` - Завершена\n        \n    - `CANCELLED` - Отменена\n        \n3. Даты должны передаваться в формате ISO 8601 (YYYY-MM-DD)"
+			},
+			"response": [
+				{
+					"name": "Накладная успешно создана",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"invoiceNumber\": \"<string>\",\n  \"items\": [\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"barcode\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"barcode\": \"<string>\"\n    }\n  ],\n  \"barcode\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"_id\": \"<string>\",\n  \"invoiceNumber\": \"<string>\",\n  \"barcode\": \"<string>\",\n  \"status\": \"in_progress\",\n  \"items\": [\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"barcode\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"actualQuantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\",\n      \"status\": \"counted\",\n      \"placementCartId\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"barcode\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"actualQuantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\",\n      \"status\": \"scanned\",\n      \"placementCartId\": \"<string>\"\n    }\n  ],\n  \"createdAt\": \"<dateTime>\"\n}"
+				},
+				{
+					"name": "Неверные данные запроса",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"invoiceNumber\": \"<string>\",\n  \"items\": [\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"barcode\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"barcode\": \"<string>\"\n    }\n  ],\n  \"barcode\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"invoiceNumber\": \"<string>\",\n  \"items\": [\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"barcode\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"barcode\": \"<string>\"\n    }\n  ],\n  \"barcode\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Начать обработку накладной",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/receiving/{{invoiceid}}/scan",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"receiving",
+						"{{invoiceid}}",
+						"scan"
+					]
+				},
+				"description": "Изменяет статус накладной на \"в процессе приёмки\"\n\n# Документация для API запроса сканирования при приемке\n\n## `POST /wms/v1/receiving/scan`\n\nЭтот эндпоинт используется для регистрации сканирования товара в процессе приемки на склад.\n\n### Базовый URL\n\n```\nhttps://sklad.testerhub.ru\n\n ```\n\n### Авторизация\n\nТребуется JWT токен, полученный через `/wms/v1/auth/login`  \nФормат заголовка:\n\n```\nAuthorization: Bearer <ваш_токен>\n\n ```\n\n### Заголовки запроса (Headers)\n\n- `Authorization`: `Bearer <токен>`\n    \n- `Content-Type`: `application/json`\n    \n- `Accept`: `application/json`\n    \n\n### Тело запроса (Request Body)\n\n``` json\n{\n  \"receiving_id\": \"string\",\n  \"barcode\": \"string\",\n  \"quantity\": 0,\n  \"location\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Обязательный | Описание |\n| --- | --- | --- | --- |\n| receiving_id | string | Да | ID приемки из системы |\n| barcode | string | Да | Штрих-код сканируемого товара |\n| quantity | integer | Да | Количество сканируемых единиц |\n| location | string | Нет | Локация/зона сканирования |\n\n### Пример запроса\n\n``` bash\ncurl -X POST \"https://sklad.testerhub.ru/wms/v1/receiving/scan\" \\\n  -H \"Authorization: Bearer ваш_токен\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -d '{\n    \"receiving_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"barcode\": \"2000000000017\",\n    \"quantity\": 5,\n    \"location\": \"A-12-05\"\n  }'\n\n ```\n\n### Ответы (Responses)\n\n**Успешное сканирование (200 OK):**\n\n``` json\n{\n  \"scan_id\": \"string\",\n  \"receiving_id\": \"string\",\n  \"sku\": \"string\",\n  \"product_name\": \"string\",\n  \"scanned_quantity\": 0,\n  \"total_accepted\": 0,\n  \"remaining\": 0,\n  \"status\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| scan_id | string | Уникальный ID операции сканирования |\n| receiving_id | string | ID приемки |\n| sku | string | Артикул товара |\n| product_name | string | Наименование товара |\n| scanned_quantity | integer | Количество в текущем сканировании |\n| total_accepted | integer | Всего принято по данной приемке |\n| remaining | integer | Осталось принять |\n| status | string | Статус операции (ACCEPTED, PARTIAL, COMPLETED) |\n\n**Ошибки:**\n\n- `400 Bad Request` - Неверный формат запроса или данных\n    \n- `401 Unauthorized` - Неверный или отсутствующий токен\n    \n- `403 Forbidden` - Нет доступа к операции\n    \n- `404 Not Found` - Приемка или товар не найдены\n    \n- `409 Conflict` - Конфликт данных (превышение количества и т.д.)\n    \n- `500 Internal Server Error` - Ошибка сервера\n    \n\n### Дополнительная информация\n\n1. Возможные статусы операции:\n    \n    - `ACCEPTED` - Товар полностью принят\n        \n    - `PARTIAL` - Принята часть количества\n        \n    - `COMPLETED` - Приемка завершена\n        \n    - `REJECTED` - Товар отклонен\n        \n2. При превышении ожидаемого количества система может:\n    \n    - Автоматически создавать расхождения\n        \n    - Требовать подтверждения супервизора\n        \n3. Для массового сканирования рекомендуется делать последовательные запросы с паузой 200-300 мс\n    \n4. Локация (location) может быть:\n    \n    - Номером ячейки (например, \"A-12-05\")\n        \n    - Зоной приемки (например, \"RECEIVING-ZONE-1\")\n        \n    - Пустой, если сканирование происходит без привязки к локации"
+			},
+			"response": [
+				{
+					"name": "Обработка накладной успешно начата",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/scan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"scan"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"_id\": \"<string>\",\n  \"invoiceNumber\": \"<string>\",\n  \"barcode\": \"<string>\",\n  \"status\": \"in_progress\",\n  \"items\": [\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"barcode\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"actualQuantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\",\n      \"status\": \"counted\",\n      \"placementCartId\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"barcode\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"actualQuantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\",\n      \"status\": \"scanned\",\n      \"placementCartId\": \"<string>\"\n    }\n  ],\n  \"createdAt\": \"<dateTime>\"\n}"
+				},
+				{
+					"name": "Накладная не найдена",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/scan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"scan"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/scan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"scan"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Сканировать товар в накладной",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"\r",
+							"console.log(\"Полученный ответ:\", response);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"barcode\": \"{{barcode1}}\"\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/receiving/{{invoiceid}}/items/{{itemId1}}/scan",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"receiving",
+						"{{invoiceid}}",
+						"items",
+						"{{itemId1}}",
+						"scan"
+					]
+				},
+				"description": "Сканирует штрихкод товара при приёмке для подтверждения его наличия\n\n# Документация для API запроса сканирования позиций при приемке\n\n## `POST /wms/v1/receiving/items/scan`\n\nЭтот эндпоинт используется для регистрации сканирования конкретной позиции товара в процессе приемки на склад.\n\n### Базовый URL\n\n```\nhttps://sklad.testerhub.ru\n\n ```\n\n### Авторизация\n\nТребуется JWT токен, полученный через `/wms/v1/auth/login`  \nФормат заголовка:\n\n```\nAuthorization: Bearer <ваш_токен>\n\n ```\n\n## Заголовки запроса (Headers)\n\n- `Authorization`: `Bearer <токен>`\n    \n- `Content-Type`: `application/json`\n    \n- `Accept`: `application/json`\n    \n\n## Тело запроса (Request Body)\n\n``` json\n{\n  \"receiving_id\": \"string\",\n  \"item_id\": \"string\",\n  \"barcode\": \"string\",\n  \"quantity\": 0,\n  \"location\": \"string\",\n  \"scanner_id\": \"string\",\n  \"batch_number\": \"string\",\n  \"expiry_date\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Обязательный | Описание |\n| --- | --- | --- | --- |\n| receiving_id | string | Да | ID приемки в системе |\n| item_id | string | Да | ID позиции в накладной |\n| barcode | string | Да | Штрих-код товара |\n| quantity | integer | Да | Количество сканируемых единиц |\n| location | string | Нет | Локация размещения |\n| scanner_id | string | Нет | ID сканера/пользователя |\n| batch_number | string | Нет | Номер партии |\n| expiry_date | string | Нет | Срок годности (YYYY-MM-DD) |\n\n## Пример запроса\n\n``` bash\ncurl -X POST \"https://sklad.testerhub.ru/wms/v1/receiving/items/scan\" \\\n  -H \"Authorization: Bearer ваш_токен\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -d '{\n    \"receiving_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"item_id\": \"7654321\",\n    \"barcode\": \"2000000000017\",\n    \"quantity\": 10,\n    \"location\": \"A-12-05\",\n    \"scanner_id\": \"SCN-001\",\n    \"batch_number\": \"BATCH-2023-11-01\",\n    \"expiry_date\": \"2025-11-01\"\n  }'\n\n ```\n\n## Ответы (Responses)\n\n**Успешное сканирование (200 OK):**\n\n``` json\n{\n  \"scan_id\": \"string\",\n  \"receiving_id\": \"string\",\n  \"item_id\": \"string\",\n  \"sku\": \"string\",\n  \"product_name\": \"string\",\n  \"scanned_quantity\": 0,\n  \"total_accepted\": 0,\n  \"remaining\": 0,\n  \"status\": \"string\",\n  \"batch_number\": \"string\",\n  \"expiry_date\": \"string\",\n  \"location\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| scan_id | string | Уникальный ID операции сканирования |\n| receiving_id | string | ID приемки |\n| item_id | string | ID позиции в накладной |\n| sku | string | Артикул товара |\n| product_name | string | Наименование товара |\n| scanned_quantity | integer | Количество в текущем сканировании |\n| total_accepted | integer | Всего принято по данной позиции |\n| remaining | integer | Осталось принять по позиции |\n| status | string | Статус операции |\n| batch_number | string | Номер партии |\n| expiry_date | string | Срок годности |\n| location | string | Локация размещения |\n\n**Ошибки:**\n\n- `400 Bad Request` - Неверный формат запроса или данных\n    \n- `401 Unauthorized` - Неверный или отсутствующий токен\n    \n- `403 Forbidden` - Нет доступа к операции\n    \n- `404 Not Found` - Приемка или позиция не найдены\n    \n- `409 Conflict` - Конфликт данных (превышение количества и т.д.)\n    \n- `500 Internal Server Error` - Ошибка сервера\n    \n\n## Дополнительная информация\n\n1. Особенности работы:\n    \n    - Для одной позиции может быть выполнено несколько сканирований\n        \n    - Система автоматически суммирует количество по всем сканированиям позиции\n        \n    - При полном приеме позиции статус меняется на COMPLETED\n        \n2. Статусы сканирования:\n    \n    - `ACCEPTED` - Товар принят\n        \n    - `PARTIAL` - Принята часть количества\n        \n    - `COMPLETED` - Позиция полностью принята\n        \n    - `OVERSCAN` - Превышение количества (требует подтверждения)\n        \n    - `MISMATCH` - Несоответствие товара\n        \n3. Для товаров с обязательным учетом срока годности необходимо передавать:\n    \n    - `batch_number` - Номер партии\n        \n    - `expiry_date` - Срок годности\n        \n4. Рекомендуемая последовательность работы:\n    \n    1. Получить список позиций приемки через GET /receiving/{id}\n        \n    2. Выполнять сканирование через POST /receiving/items/scan\n        \n    3. Контролировать остатки через поле `remaining` в ответе"
+			},
+			"response": [
+				{
+					"name": "Товар успешно отсканирован",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/items/:itemId/scan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"items",
+								":itemId",
+								"scan"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"id\": \"<string>\",\n  \"productId\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"barcode\": \"<string>\",\n  \"expectedQuantity\": \"<number>\",\n  \"status\": \"<string>\"\n}"
+				},
+				{
+					"name": "Штрихкод не соответствует товару",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/items/:itemId/scan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"items",
+								":itemId",
+								"scan"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				},
+				{
+					"name": "Накладная или товар не найдены",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/items/:itemId/scan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"items",
+								":itemId",
+								"scan"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/items/:itemId/scan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"items",
+								":itemId",
+								"scan"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Создать новую тележку размещения",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set(\"placementCartId\", response._id);\r",
+							"console.log(\"Создана Новая тележка №\",  pm.collectionVariables.get(\"placementCartId\"))"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/placement-carts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"placement-carts"
+					]
+				},
+				"description": "Создает новую пустую тележку размещения со статусом \"free\"\n\n# Документация для API работы с тележками размещения\n\n## `GET /wms/v1/placement-carts`\n\nЭтот эндпоинт используется для получения списка тележек размещения на складе.\n\n### Базовый URL\n\n```\nhttps://sklad.testerhub.ru\n\n ```\n\n### Авторизация\n\nТребуется JWT токен, полученный через `/wms/v1/auth/login`  \nФормат заголовка:\n\n```\nAuthorization: Bearer <ваш_токен>\n\n ```\n\n### Заголовки запроса (Headers)\n\n- `Authorization`: `Bearer <токен>`\n    \n- `Accept`: `application/json`\n    \n\n### Параметры запроса (Query Parameters)\n\n| Параметр | Тип | Обязательный | Описание | Пример |\n| --- | --- | --- | --- | --- |\n| status | string | Нет | Статус тележки (FREE, IN_USE, MAINTENANCE) | IN_USE |\n| zone | string | Нет | Зона расположения тележки | ZONE_A |\n| last_used_from | string | Нет | Начальная дата последнего использования (YYYY-MM-DD) | 2023-01-01 |\n| last_used_to | string | Нет | Конечная дата последнего использования (YYYY-MM-DD) | 2023-12-31 |\n| limit | integer | Нет | Лимит записей (по умолчанию 50) | 100 |\n| offset | integer | Нет | Смещение (для пагинации) | 0 |\n\n### Пример запроса\n\n``` bash\ncurl -X GET \"https://sklad.testerhub.ru/wms/v1/placement-carts?status=IN_USE&zone=ZONE_A&limit=5\" \\\n  -H \"Authorization: Bearer ваш_токен\" \\\n  -H \"Accept: application/json\"\n\n ```\n\n### Ответы (Responses)\n\n**Успешный запрос (200 OK):**\n\n``` json\n{\n  \"carts\": [\n    {\n      \"id\": \"string\",\n      \"barcode\": \"string\",\n      \"name\": \"string\",\n      \"status\": \"string\",\n      \"current_zone\": \"string\",\n      \"last_used_at\": \"string\",\n      \"last_used_by\": \"string\",\n      \"capacity\": {\n        \"max_volume\": 0,\n        \"max_weight\": 0,\n        \"current_volume\": 0,\n        \"current_weight\": 0\n      },\n      \"metadata\": {}\n    }\n  ],\n  \"total\": 0,\n  \"limit\": 0,\n  \"offset\": 0\n}\n\n ```\n\n| Параметр (вложенный) | Тип | Описание |\n| --- | --- | --- |\n| id | string | Уникальный ID тележки |\n| barcode | string | Штрих-код тележки |\n| name | string | Наименование тележки |\n| status | string | Статус тележки |\n| current_zone | string | Текущая зона расположения |\n| last_used_at | string | Дата последнего использования (ISO) |\n| last_used_by | string | ID последнего пользователя |\n| capacity.max_volume | number | Максимальный объем |\n| capacity.max_weight | number | Максимальный вес |\n| capacity.current_volume | number | Текущий занятый объем |\n| capacity.current_weight | number | Текущий занятый вес |\n| metadata | object | Дополнительные метаданные |\n| total | integer | Всего тележек |\n| limit | integer | Лимит в ответе |\n| offset | integer | Смещение |\n\n**Ошибки:**\n\n- `401 Unauthorized` - Неверный или отсутствующий токен\n    \n- `403 Forbidden` - Нет доступа к ресурсу\n    \n- `500 Internal Server Error` - Ошибка сервера\n    \n\n## `POST /wms/v1/placement-carts`\n\nСоздание новой тележки размещения или регистрация существующей в системе.\n\n### Тело запроса (Request Body)\n\n``` json\n{\n  \"barcode\": \"string\",\n  \"name\": \"string\",\n  \"max_volume\": 0,\n  \"max_weight\": 0,\n  \"initial_zone\": \"string\",\n  \"metadata\": {}\n}\n\n ```\n\n### Пример ответа (201 Created)\n\n``` json\n{\n  \"id\": \"string\",\n  \"barcode\": \"string\",\n  \"message\": \"Тележка успешно зарегистрирована\"\n}\n\n ```\n\n## `PUT /wms/v1/placement-carts/{cartId}`\n\nОбновление информации о тележке.\n\n## `DELETE /wms/v1/placement-carts/{cartId}`\n\nУдаление тележки из системы.\n\n### Дополнительная информация\n\n1. Статусы тележек:\n    \n    - `FREE` - Свободна\n        \n    - `IN_USE` - В работе\n        \n    - `MAINTENANCE` - На обслуживании\n        \n    - `OUT_OF_SERVICE` - Неисправна\n        \n2. Для работы с конкретной тележкой используйте:\n    \n    - `GET /wms/v1/placement-carts/{cartId}` - Получить данные тележки\n        \n    - `GET /wms/v1/placement-carts/{cartId}/items` - Получить товары на тележке\n        \n3. Метрики объема и веса указываются в:\n    \n    - Объем: м³\n        \n    - Вес: кг"
+			},
+			"response": [
+				{
+					"name": "Тележка размещения успешно создана",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/placement-carts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"placement-carts"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"_id\": \"<string>\",\n  \"status\": \"free\",\n  \"items\": [\n    {\n      \"invoiceId\": \"<string>\",\n      \"itemId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"quantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\"\n    },\n    {\n      \"invoiceId\": \"<string>\",\n      \"itemId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"quantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\"\n    }\n  ],\n  \"createdAt\": \"<dateTime>\"\n}"
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/placement-carts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"placement-carts"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Подсчёт количества товара",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"actualQuantity\": \"10\",\n  \"placementCartId\": \"{{placementCartId}}\"\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/receiving/{{invoiceid}}/items/{{itemId1}}/count",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"receiving",
+						"{{invoiceid}}",
+						"items",
+						"{{itemId1}}",
+						"count"
+					]
+				},
+				"description": "Фиксирует фактическое количество товара при приёмке и опционально привязывает к тележке размещения\n\n# Документация для API запроса подтверждения количества при приемке\n\n## `POST /wms/v1/receiving/items/count`\n\nЭтот эндпоинт используется для подтверждения фактического количества принятого товара по позиции приемки.\n\n### Базовый URL\n\n```\nhttps://sklad.testerhub.ru\n\n ```\n\n### Авторизация\n\nТребуется JWT токен, полученный через `/wms/v1/auth/login`  \nФормат заголовка:\n\n```\nAuthorization: Bearer <ваш_токен>\n\n ```\n\n### Заголовки запроса (Headers)\n\n- `Authorization`: `Bearer <токен>`\n    \n- `Content-Type`: `application/json`\n    \n- `Accept`: `application/json`\n    \n\n### Тело запроса (Request Body)\n\n``` json\n{\n  \"receiving_id\": \"string\",\n  \"item_id\": \"string\",\n  \"confirmed_quantity\": 0,\n  \"operator_comment\": \"string\",\n  \"discrepancy_reason\": \"string\",\n  \"photos\": [\"string\"]\n}\n\n ```\n\n| Параметр | Тип | Обязательный | Описание |\n| --- | --- | --- | --- |\n| receiving_id | string | Да | ID приемки в системе |\n| item_id | string | Да | ID позиции в накладной |\n| confirmed_quantity | integer | Да | Фактически принятое количество |\n| operator_comment | string | Нет | Комментарий оператора |\n| discrepancy_reason | string | Нет | Причина расхождения (если есть) |\n| photos | array | Нет | Ссылки на фото документов |\n\n### Пример запроса\n\n``` bash\ncurl -X POST \"https://sklad.testerhub.ru/wms/v1/receiving/items/count\" \\\n  -H \"Authorization: Bearer ваш_токен\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -d '{\n    \"receiving_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"item_id\": \"7654321\",\n    \"confirmed_quantity\": 8,\n    \"operator_comment\": \"Упаковка повреждена\",\n    \"discrepancy_reason\": \"SHORTAGE\",\n    \"photos\": [\n      \"https://storage.example.com/photo1.jpg\",\n      \"https://storage.example.com/photo2.jpg\"\n    ]\n  }'\n\n ```\n\n### Ответы (Responses)\n\n**Успешное подтверждение (200 OK):**\n\n``` json\n{\n  \"receiving_id\": \"string\",\n  \"item_id\": \"string\",\n  \"expected_quantity\": 0,\n  \"confirmed_quantity\": 0,\n  \"status\": \"string\",\n  \"discrepancy\": {\n    \"type\": \"string\",\n    \"quantity\": 0,\n    \"reason\": \"string\",\n    \"resolved\": false\n  },\n  \"updated_at\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| receiving_id | string | ID приемки |\n| item_id | string | ID позиции |\n| expected_quantity | integer | Ожидаемое количество |\n| confirmed_quantity | integer | Подтвержденное количество |\n| status | string | Новый статус позиции |\n| discrepancy.type | string | Тип расхождения |\n| discrepancy.quantity | integer | Количество расхождения |\n| discrepancy.reason | string | Причина расхождения |\n| discrepancy.resolved | boolean | Флаг разрешения расхождения |\n| updated_at | string | Время обновления (ISO 8601) |\n\n**Ошибки:**\n\n- `400 Bad Request` - Неверный формат запроса\n    \n- `401 Unauthorized` - Неверная авторизация\n    \n- `403 Forbidden` - Нет прав на операцию\n    \n- `404 Not Found` - Приемка или позиция не найдены\n    \n- `409 Conflict` - Несоответствие данных\n    \n- `500 Internal Server Error` - Ошибка сервера\n    \n\n### Дополнительная информация\n\n1. Типы расхождений:\n    \n    - `SHORTAGE` - Недостача\n        \n    - `OVERAGE` - Излишек\n        \n    - `DAMAGED` - Поврежденный товар\n        \n    - `WRONG_ITEM` - Несоответствующий товар\n        \n2. Статусы позиции после подтверждения:\n    \n    - `COUNTED` - Количество подтверждено\n        \n    - `DISCREPANCY` - Есть расхождения\n        \n    - `CONFIRMED` - Окончательно подтверждено\n        \n    - `QUARANTINE` - Товар на карантине\n        \n3. Особенности работы:\n    \n    - При первом подтверждении позиция переходит в статус COUNTED\n        \n    - При расхождениях требуется дополнительное подтверждение\n        \n    - Фото документов обязательны для расхождений типа DAMAGED\n        \n4. Для массового подтверждения используйте batch-запросы (если поддерживается API)"
+			},
+			"response": [
+				{
+					"name": "Количество товара успешно зафиксировано",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"actualQuantity\": \"<number>\",\n  \"placementCartId\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/items/:itemId/count",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"items",
+								":itemId",
+								"count"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"id\": \"<string>\",\n  \"productId\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"barcode\": \"<string>\",\n  \"expectedQuantity\": \"<number>\",\n  \"actualQuantity\": \"<number>\",\n  \"status\": \"<string>\",\n  \"placementCartId\": \"<string>\"\n}"
+				},
+				{
+					"name": "Накладная, товар или тележка размещения не найдены",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"actualQuantity\": \"<number>\",\n  \"placementCartId\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/items/:itemId/count",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"items",
+								":itemId",
+								"count"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"actualQuantity\": \"<number>\",\n  \"placementCartId\": \"<string>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/items/:itemId/count",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"items",
+								":itemId",
+								"count"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Завершить приёмку накладной",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/receiving/{{invoiceid}}/complete",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"receiving",
+						"{{invoiceid}}",
+						"complete"
+					]
+				},
+				"description": "Завершает процесс приёмки накладной и фиксирует итоговый статус\n\n# Документация для API запроса завершения приемки\n\n## `POST /wms/v1/receiving/complete`\n\nЭтот эндпоинт используется для завершения процесса приемки товаров на склад.\n\n### Базовый URL\n\n```\nhttps://sklad.testerhub.ru\n\n ```\n\n### Авторизация\n\nТребуется JWT токен, полученный через `/wms/v1/auth/login`  \nФормат заголовка:\n\n```\nAuthorization: Bearer <ваш_токен>\n\n ```\n\n### Заголовки запроса (Headers)\n\n- `Authorization`: `Bearer <токен>`\n    \n- `Content-Type`: `application/json`\n    \n- `Accept`: `application/json`\n    \n\n### Тело запроса (Request Body)\n\n``` json\n{\n  \"receiving_id\": \"string\",\n  \"force_complete\": false,\n  \"operator_comment\": \"string\",\n  \"discrepancies\": [\n    {\n      \"item_id\": \"string\",\n      \"type\": \"string\",\n      \"quantity\": 0,\n      \"reason\": \"string\",\n      \"photos\": [\"string\"]\n    }\n  ]\n}\n\n ```\n\n| Параметр | Тип | Обязательный | Описание |\n| --- | --- | --- | --- |\n| receiving_id | string | Да | ID приемки в системе |\n| force_complete | boolean | Нет | Принудительное завершение (по умолчанию false) |\n| operator_comment | string | Нет | Комментарий оператора |\n| discrepancies | array | Нет | Список расхождений |\n\n### Структура расхождений\n\n| Параметр | Тип | Обязательный | Описание |\n| --- | --- | --- | --- |\n| item_id | string | Да | ID позиции с расхождением |\n| type | string | Да | Тип расхождения |\n| quantity | integer | Да | Количество расхождения |\n| reason | string | Нет | Причина расхождения |\n| photos | array | Нет | Ссылки на фото документов |\n\n### Пример запроса\n\n``` bash\ncurl -X POST \"https://sklad.testerhub.ru/wms/v1/receiving/complete\" \\\n  -H \"Authorization: Bearer ваш_токен\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json\" \\\n  -d '{\n    \"receiving_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"force_complete\": false,\n    \"operator_comment\": \"Приемка завершена, есть небольшие расхождения\",\n    \"discrepancies\": [\n      {\n        \"item_id\": \"item-123\",\n        \"type\": \"SHORTAGE\",\n        \"quantity\": 2,\n        \"reason\": \"Недостача по накладной\",\n        \"photos\": [\"https://storage.example.com/photo1.jpg\"]\n      }\n    ]\n  }'\n\n ```\n\n### Ответы (Responses)\n\n**Успешное завершение (200 OK):**\n\n``` json\n{\n  \"receiving_id\": \"string\",\n  \"status\": \"string\",\n  \"completed_at\": \"string\",\n  \"completed_by\": \"string\",\n  \"discrepancies_count\": 0,\n  \"documents\": {\n    \"act_url\": \"string\",\n    \"report_url\": \"string\"\n  }\n}\n\n ```\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| receiving_id | string | ID приемки |\n| status | string | Новый статус приемки |\n| completed_at | string | Дата завершения (ISO 8601) |\n| completed_by | string | ID пользователя, завершившего приемку |\n| discrepancies_count | integer | Количество расхождений |\n| documents.act_url | string | Ссылка на акт приемки |\n| documents.report_url | string | Ссылка на отчет о приемке |\n\n**Ошибки:**\n\n- `400 Bad Request` - Не все позиции подтверждены или неверный запрос\n    \n- `401 Unauthorized` - Неверная авторизация\n    \n- `403 Forbidden` - Нет прав на завершение приемки\n    \n- `404 Not Found` - Приемка не найдена\n    \n- `409 Conflict` - Нельзя завершить приемку (есть неподтвержденные позиции)\n    \n- `500 Internal Server Error` - Ошибка сервера\n    \n\n### Дополнительная информация\n\n1. Статусы приемки после завершения:\n    \n    - `COMPLETED` - Успешно завершена\n        \n    - `COMPLETED_WITH_DISCREPANCIES` - Завершена с расхождениями\n        \n    - `FORCE_COMPLETED` - Принудительно завершена\n        \n2. Особенности работы:\n    \n    - При наличии неподтвержденных позиций требуется `force_complete: true`\n        \n    - Расхождения автоматически фиксируются в системе учета\n        \n    - Генерируются документы приемки (акты, отчеты)\n        \n3. Рекомендуемая последовательность:\n    \n    1. Подтвердить все позиции через `/receiving/items/count`\n        \n    2. Проверить статус приемки через `/receiving/{id}`\n        \n    3. Завершить приемку через `/receiving/complete`"
+			},
+			"response": [
+				{
+					"name": "Приёмка накладной успешно завершена",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/complete",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"complete"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"_id\": \"<string>\",\n  \"invoiceNumber\": \"<string>\",\n  \"barcode\": \"<string>\",\n  \"status\": \"in_progress\",\n  \"items\": [\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"barcode\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"actualQuantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\",\n      \"status\": \"counted\",\n      \"placementCartId\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"productId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"name\": \"<string>\",\n      \"barcode\": \"<string>\",\n      \"expectedQuantity\": \"<number>\",\n      \"actualQuantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\",\n      \"status\": \"scanned\",\n      \"placementCartId\": \"<string>\"\n    }\n  ],\n  \"createdAt\": \"<dateTime>\"\n}"
+				},
+				{
+					"name": "Не все товары посчитаны или другая ошибка при завершении",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/complete",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"complete"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				},
+				{
+					"name": "Накладная не найдена",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/complete",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"complete"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/receiving/:invoiceId/complete",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"receiving",
+								":invoiceId",
+								"complete"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Получить тележку размещения по ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/placement-carts/{{placementCartId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"placement-carts",
+						"{{placementCartId}}"
+					]
+				},
+				"description": "Возвращает подробную информацию о конкретной тележке размещения\n\n# Документация для API работы с тележками размещения\n\n## `GET /wms/v1/placement-carts/`\n\nЭтот эндпоинт предоставляет полный функционал для работы с тележками размещения на складе.\n\n### Базовый URL\n\n```\nhttps://sklad.testerhub.ru\n\n ```\n\n## 1\\. Получение списка тележек\n\n### `GET /wms/v1/placement-carts/`\n\n#### Параметры запроса:\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| status | string | Фильтр по статусу (FREE, IN_USE, MAINTENANCE) |\n| zone | string | Фильтр по зоне размещения |\n| last_used_from | string | Фильтр по дате последнего использования (YYYY-MM-DD) |\n| limit | integer | Лимит записей (по умолчанию 50) |\n| offset | integer | Смещение для пагинации |\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"carts\": [\n    {\n      \"id\": \"cart-001\",\n      \"barcode\": \"CART001\",\n      \"name\": \"Тележка для размещения #1\",\n      \"status\": \"IN_USE\",\n      \"current_zone\": \"ZONE_A\",\n      \"last_used_at\": \"2023-05-15T10:30:00Z\",\n      \"capacity\": {\n        \"max_volume\": 2.5,\n        \"max_weight\": 500,\n        \"current_volume\": 1.2,\n        \"current_weight\": 230\n      }\n    }\n  ],\n  \"total\": 15,\n  \"limit\": 1,\n  \"offset\": 0\n}\n\n ```\n\n## 2\\. Создание новой тележки\n\n### `POST /wms/v1/placement-carts/`\n\n#### Тело запроса:\n\n``` json\n{\n  \"barcode\": \"string\",\n  \"name\": \"string\",\n  \"max_volume\": 0,\n  \"max_weight\": 0,\n  \"initial_zone\": \"string\"\n}\n\n ```\n\n#### Пример ответа (201 Created):\n\n``` json\n{\n  \"id\": \"cart-002\",\n  \"barcode\": \"CART002\",\n  \"message\": \"Тележка успешно зарегистрирована\"\n}\n\n ```\n\n## 3\\. Получение информации о конкретной тележке\n\n### `GET /wms/v1/placement-carts/{cart_id}`\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"id\": \"cart-001\",\n  \"barcode\": \"CART001\",\n  \"name\": \"Тележка для размещения #1\",\n  \"status\": \"IN_USE\",\n  \"current_zone\": \"ZONE_A\",\n  \"last_used_at\": \"2023-05-15T10:30:00Z\",\n  \"capacity\": {\n    \"max_volume\": 2.5,\n    \"max_weight\": 500,\n    \"current_volume\": 1.2,\n    \"current_weight\": 230\n  },\n  \"items\": [\n    {\n      \"sku\": \"ITEM001\",\n      \"name\": \"Товар 1\",\n      \"quantity\": 10,\n      \"location\": \"A-12-05\"\n    }\n  ]\n}\n\n ```\n\n## 4\\. Обновление информации о тележке\n\n### `PUT /wms/v1/placement-carts/{cart_id}`\n\n#### Тело запроса:\n\n``` json\n{\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"current_zone\": \"string\",\n  \"max_volume\": 0,\n  \"max_weight\": 0\n}\n\n ```\n\n## 5\\. Удаление тележки\n\n### `DELETE /wms/v1/placement-carts/{cart_id}`\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"message\": \"Тележка успешно удалена\"\n}\n\n ```\n\n## 6\\. Получение товаров на тележке\n\n### `GET /wms/v1/placement-carts/{cart_id}/items`\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"items\": [\n    {\n      \"sku\": \"ITEM001\",\n      \"name\": \"Товар 1\",\n      \"quantity\": 10,\n      \"location\": \"A-12-05\",\n      \"batch_number\": \"BATCH001\",\n      \"expiry_date\": \"2024-12-31\"\n    }\n  ],\n  \"total_volume\": 1.2,\n  \"total_weight\": 230\n}\n\n ```\n\n## Стандартные ошибки\n\n- `400 Bad Request` - Неверные параметры запроса\n    \n- `401 Unauthorized` - Требуется авторизация\n    \n- `403 Forbidden` - Нет доступа к операции\n    \n- `404 Not Found` - Тележка не найдена\n    \n- `500 Internal Server Error` - Ошибка сервера"
+			},
+			"response": [
+				{
+					"name": "Успешное получение информации о тележке размещения",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/placement-carts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"placement-carts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"_id\": \"<string>\",\n  \"status\": \"free\",\n  \"items\": [\n    {\n      \"invoiceId\": \"<string>\",\n      \"itemId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"quantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\"\n    },\n    {\n      \"invoiceId\": \"<string>\",\n      \"itemId\": \"<string>\",\n      \"sku\": \"<string>\",\n      \"quantity\": \"<number>\",\n      \"placedQuantity\": \"<number>\"\n    }\n  ],\n  \"createdAt\": \"<dateTime>\"\n}"
+				},
+				{
+					"name": "Тележка размещения не найдена",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/placement-carts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"placement-carts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/placement-carts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"placement-carts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Получить список всех ячеек",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/locations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"locations"
+					]
+				},
+				"description": "Возвращает полный список всех ячеек склада с их параметрами\n\n# Документация API для работы с локациями склада\n\n## Базовый URL\n\n```\nhttps://sklad.testerhub.ru/wms/v1/locations\n\n ```\n\n## 1\\. Получение списка локаций (GET)\n\n### `GET /wms/v1/locations`\n\nПолучение списка всех локаций склада с возможностью фильтрации.\n\n#### Заголовки:\n\n- `Authorization: Bearer <токен>`\n    \n- `Accept: application/json`\n    \n\n#### Параметры запроса:\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| zone | string | Фильтр по зоне |\n| type | string | Тип локации (STORAGE, PICKING, RECEIVING, etc.) |\n| status | string | Статус (FREE, OCCUPIED, BLOCKED) |\n| limit | integer | Лимит записей (по умолчанию 100) |\n| offset | integer | Смещение для пагинации |\n\n#### Пример запроса:\n\n``` bash\ncurl -X GET \"https://sklad.testerhub.ru/wms/v1/locations?zone=A&type=STORAGE&limit=5\" \\\n  -H \"Authorization: Bearer ваш_токен\" \\\n  -H \"Accept: application/json\"\n\n ```\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"locations\": [\n    {\n      \"id\": \"loc-001\",\n      \"barcode\": \"A-01-01\",\n      \"name\": \"Стеллаж A-01-01\",\n      \"zone\": \"ZONE_A\",\n      \"type\": \"STORAGE\",\n      \"status\": \"OCCUPIED\",\n      \"dimensions\": {\n        \"length\": 1.2,\n        \"width\": 1.0,\n        \"height\": 1.5,\n        \"max_weight\": 500\n      },\n      \"current_item\": {\n        \"sku\": \"ITEM001\",\n        \"name\": \"Товар 1\",\n        \"quantity\": 10\n      }\n    }\n  ],\n  \"total\": 120,\n  \"limit\": 5,\n  \"offset\": 0\n}\n\n ```\n\n## 2\\. Создание новой локации (POST)\n\n### `POST /wms/v1/locations`\n\n#### Тело запроса:\n\n``` json\n{\n  \"barcode\": \"string\",\n  \"name\": \"string\",\n  \"zone\": \"string\",\n  \"type\": \"string\",\n  \"dimensions\": {\n    \"length\": 0,\n    \"width\": 0,\n    \"height\": 0,\n    \"max_weight\": 0\n  }\n}\n\n ```\n\n#### Пример ответа (201 Created):\n\n``` json\n{\n  \"id\": \"loc-002\",\n  \"barcode\": \"B-01-01\",\n  \"message\": \"Локация успешно создана\"\n}\n\n ```\n\n## 3\\. Получение информации о локации (GET)\n\n### `GET /wms/v1/locations/{location_id}`\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"id\": \"loc-001\",\n  \"barcode\": \"A-01-01\",\n  \"name\": \"Стеллаж A-01-01\",\n  \"zone\": \"ZONE_A\",\n  \"type\": \"STORAGE\",\n  \"status\": \"OCCUPIED\",\n  \"dimensions\": {\n    \"length\": 1.2,\n    \"width\": 1.0,\n    \"height\": 1.5,\n    \"max_weight\": 500\n  },\n  \"current_items\": [\n    {\n      \"sku\": \"ITEM001\",\n      \"name\": \"Товар 1\",\n      \"quantity\": 10,\n      \"batch_number\": \"BATCH001\",\n      \"expiry_date\": \"2024-12-31\"\n    }\n  ],\n  \"history\": {\n    \"last_modified\": \"2023-05-15T10:30:00Z\",\n    \"modified_by\": \"user123\"\n  }\n}\n\n ```\n\n## 4\\. Обновление локации (PUT)\n\n### `PUT /wms/v1/locations/{location_id}`\n\n#### Тело запроса:\n\n``` json\n{\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"dimensions\": {\n    \"length\": 0,\n    \"width\": 0,\n    \"height\": 0,\n    \"max_weight\": 0\n  }\n}\n\n ```\n\n## 5\\. Удаление локации (DELETE)\n\n### `DELETE /wms/v1/locations/{location_id}`\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"message\": \"Локация успешно удалена\"\n}\n\n ```\n\n## 6\\. Получение истории изменений локации\n\n### `GET /wms/v1/locations/{location_id}/history`\n\n#### Параметры запроса:\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| date_from | string | Начальная дата (YYYY-MM-DD) |\n| date_to | string | Конечная дата (YYYY-MM-DD) |\n| action_type | string | Тип действия (CREATE, UPDATE, DELETE) |\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"history\": [\n    {\n      \"action\": \"UPDATE\",\n      \"changed_fields\": [\"status\", \"name\"],\n      \"changed_by\": \"user123\",\n      \"changed_at\": \"2023-05-10T14:30:00Z\",\n      \"old_values\": {\n        \"status\": \"FREE\",\n        \"name\": \"Стеллаж A-01\"\n      },\n      \"new_values\": {\n        \"status\": \"OCCUPIED\",\n        \"name\": \"Стеллаж A-01-01\"\n      }\n    }\n  ],\n  \"total\": 5\n}\n\n ```\n\n## Стандартные ошибки\n\n- `400 Bad Request` - Неверные параметры запроса\n    \n- `401 Unauthorized` - Требуется авторизация\n    \n- `403 Forbidden` - Нет доступа к операции\n    \n- `404 Not Found` - Локация не найдена\n    \n- `409 Conflict` - Локация занята, нельзя изменить/удалить\n    \n- `500 Internal Server Error` - Ошибка сервера\n    \n\n## Дополнительная информация\n\n1. Типы локаций:\n    \n    - `STORAGE` - Основное хранение\n        \n    - `PICKING` - Комплектовочная зона\n        \n    - `RECEIVING` - Зона приемки\n        \n    - `SHIPPING` - Зона отгрузки\n        \n    - `QUARANTINE` - Карантинная зона\n        \n2. Статусы локаций:\n    \n    - `FREE` - Свободна\n        \n    - `OCCUPIED` - Занята\n        \n    - `BLOCKED` - Заблокирована\n        \n    - `MAINTENANCE` - На обслуживании\n        \n3. Размерности указываются в метрах (длина/ширина/высота) и килограммах (максимальный вес)."
+			},
+			"response": [
+				{
+					"name": "Успешное получение списка ячеек",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n  {\n    \"_id\": \"<string>\",\n    \"barcode\": \"<string>\",\n    \"zone\": \"<string>\",\n    \"aisle\": \"<string>\",\n    \"rack\": \"<string>\",\n    \"level\": \"<string>\",\n    \"position\": \"<string>\",\n    \"status\": \"reserved\",\n    \"capacity\": \"<number>\",\n    \"usedCapacity\": \"<number>\",\n    \"createdAt\": \"<dateTime>\"\n  },\n  {\n    \"_id\": \"<string>\",\n    \"barcode\": \"<string>\",\n    \"zone\": \"<string>\",\n    \"aisle\": \"<string>\",\n    \"rack\": \"<string>\",\n    \"level\": \"<string>\",\n    \"position\": \"<string>\",\n    \"status\": \"occupied\",\n    \"capacity\": \"<number>\",\n    \"usedCapacity\": \"<number>\",\n    \"createdAt\": \"<dateTime>\"\n  }\n]"
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Создать новую ячейку",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let timestamp = new Date().getTime();\r",
+							"pm.collectionVariables.set(`barcodeCell`, `Cell-${timestamp}`);\r",
+							"pm.collectionVariables.set(`positionCell`, `Pos-Cell-${timestamp}`);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response=pm.response.json();\r",
+							"pm.collectionVariables.set(\"locationId\", response._id);\r",
+							"console.log(\"Создана Новая ячейка №\",  pm.collectionVariables.get(\"locationId\"))"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"barcode\": \"{{barcodeCell}}\",\n  \"zone\": \"{{$randomAlphaNumeric}}\",\n  \"aisle\": \"01\",\n  \"rack\": \"{{$randomAlphaNumeric}}\",\n  \"level\": \"02\",\n  \"position\": \"{{positionCell}}\",\n  \"capacity\": \"10\"\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/locations",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"locations"
+					]
+				},
+				"description": "Создает новую ячейку на складе с указанными параметрами\n\n# Документация API для управления складскими локациями\n\n## Базовый URL\n\n```\nhttps://sklad.testerhub.ru/wms/v1/locations\n\n ```\n\n## Общая информация\n\nAPI для работы с системой управления складскими локациями (WMS). Позволяет создавать, просматривать, обновлять и удалять локации, а также получать информацию о товарах на локациях.\n\n## Аутентификация\n\nТребуется JWT-токен в заголовке:\n\n```\nAuthorization: Bearer <ваш_токен>\n\n ```\n\n## 1\\. Получение списка локаций (GET)\n\n### `GET /wms/v1/locations`\n\n#### Параметры запроса:\n\n| Параметр | Тип | Описание | Пример |\n| --- | --- | --- | --- |\n| zone | string | Фильтр по зоне | \"ZONE_A\" |\n| type | string | Тип локации | \"STORAGE\" |\n| status | string | Статус локации | \"FREE\" |\n| with_items | boolean | Включать информацию о товарах | true |\n| limit | integer | Лимит записей | 50 |\n| offset | integer | Смещение | 0 |\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"locations\": [\n    {\n      \"id\": \"loc-001\",\n      \"code\": \"A-01-01\",\n      \"name\": \"Стеллаж A-01-01\",\n      \"path\": \"Зона A/Секция 01/Полка 01\",\n      \"zone\": \"ZONE_A\",\n      \"type\": \"STORAGE\",\n      \"status\": \"OCCUPIED\",\n      \"dimensions\": {\n        \"length\": 1.2,\n        \"width\": 1.0,\n        \"height\": 1.5,\n        \"volume\": 1.8,\n        \"max_weight\": 500\n      },\n      \"current_items\": [\n        {\n          \"sku\": \"ITEM001\",\n          \"name\": \"Товар 1\",\n          \"quantity\": 10,\n          \"batch\": \"BATCH001\",\n          \"expires\": \"2024-12-31\"\n        }\n      ],\n      \"restrictions\": {\n        \"item_types\": [\"DRY\"],\n        \"hazardous\": false,\n        \"temperature\": \"AMBIENT\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"total\": 150,\n    \"limit\": 1,\n    \"offset\": 0\n  }\n}\n\n ```\n\n## 2\\. Создание локации (POST)\n\n### `POST /wms/v1/locations`\n\n#### Тело запроса:\n\n``` json\n{\n  \"code\": \"string\",\n  \"name\": \"string\",\n  \"path\": \"string\",\n  \"zone\": \"string\",\n  \"type\": \"string\",\n  \"dimensions\": {\n    \"length\": 1.2,\n    \"width\": 1.0,\n    \"height\": 1.5,\n    \"max_weight\": 500\n  },\n  \"restrictions\": {\n    \"item_types\": [\"string\"],\n    \"hazardous\": false,\n    \"temperature\": \"string\"\n  }\n}\n\n ```\n\n#### Пример ответа (201 Created):\n\n``` json\n{\n  \"id\": \"loc-002\",\n  \"code\": \"B-01-01\",\n  \"message\": \"Локация создана\",\n  \"links\": {\n    \"self\": \"/wms/v1/locations/loc-002\",\n    \"items\": \"/wms/v1/locations/loc-002/items\"\n  }\n}\n\n ```\n\n## 3\\. Получение детальной информации (GET)\n\n### `GET /wms/v1/locations/{location_id}`\n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"id\": \"loc-001\",\n  \"code\": \"A-01-01\",\n  \"name\": \"Стеллаж A-01-01\",\n  \"path\": \"Зона A/Секция 01/Полка 01\",\n  \"zone\": \"ZONE_A\",\n  \"type\": \"STORAGE\",\n  \"status\": \"OCCUPIED\",\n  \"dimensions\": {\n    \"length\": 1.2,\n    \"width\": 1.0,\n    \"height\": 1.5,\n    \"volume\": 1.8,\n    \"max_weight\": 500\n  },\n  \"current_items\": [\n    {\n      \"sku\": \"ITEM001\",\n      \"name\": \"Товар 1\",\n      \"quantity\": 10,\n      \"batch\": \"BATCH001\",\n      \"expires\": \"2024-12-31\",\n      \"placed_at\": \"2023-05-10T14:30:00Z\"\n    }\n  ],\n  \"restrictions\": {\n    \"item_types\": [\"DRY\"],\n    \"hazardous\": false,\n    \"temperature\": \"AMBIENT\"\n  },\n  \"meta\": {\n    \"created_at\": \"2023-01-15T09:00:00Z\",\n    \"created_by\": \"user123\",\n    \"modified_at\": \"2023-05-10T14:30:00Z\",\n    \"modified_by\": \"user456\"\n  }\n}\n\n ```\n\n## 4\\. Обновление локации (PATCH)\n\n### `PATCH /wms/v1/locations/{location_id}`\n\n#### Тело запроса:\n\n``` json\n{\n  \"name\": \"Новое название\",\n  \"status\": \"BLOCKED\",\n  \"restrictions\": {\n    \"temperature\": \"COLD\"\n  }\n}\n\n ```\n\n## 5\\. Удаление локации (DELETE)\n\n### `DELETE /wms/v1/locations/{location_id}`\n\n#### Условия:\n\n- Локация должна быть пустой\n    \n- Не должно быть активных операций\n    \n\n#### Пример ответа (200 OK):\n\n``` json\n{\n  \"message\": \"Локация A-01-01 удалена\",\n  \"deleted_at\": \"2023-05-15T11:20:00Z\"\n}\n\n ```\n\n## 6\\. Получение товаров на локации\n\n### `GET /wms/v1/locations/{location_id}/items`\n\n#### Параметры:\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| show_history | boolean | Показать историю размещений |\n\n## Коды ошибок\n\n| Код | Описание | Решение |\n| --- | --- | --- |\n| 400 | Неверные параметры | Проверить тело запроса |\n| 403 | Доступ запрещен | Проверить права доступа |\n| 404 | Локация не найдена | Проверить ID локации |\n| 409 | Локация не пуста | Освободить локацию перед удалением |\n| 423 | Локация заблокирована | Дождаться окончания операции |\n\n## Дополнительные возможности\n\n1. **Массовое обновление**:  \n    `PUT /wms/v1/locations/bulk-update` - Обновление нескольких локаций\n    \n2. **Поиск свободных локаций**:  \n    `GET /wms/v1/locations/find-free` - Поиск по параметрам товара\n    \n3. **Резервирование локаций**:  \n    `POST /wms/v1/locations/reserve` - Временное резервирование"
+			},
+			"response": [
+				{
+					"name": "Ячейка успешно создана",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"<string>\",\n  \"zone\": \"<string>\",\n  \"aisle\": \"<string>\",\n  \"rack\": \"<string>\",\n  \"level\": \"<string>\",\n  \"position\": \"<string>\",\n  \"capacity\": \"<number>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"_id\": \"<string>\",\n  \"barcode\": \"<string>\",\n  \"zone\": \"<string>\",\n  \"aisle\": \"<string>\",\n  \"rack\": \"<string>\",\n  \"level\": \"<string>\",\n  \"position\": \"<string>\",\n  \"status\": \"reserved\",\n  \"capacity\": \"<number>\",\n  \"usedCapacity\": \"<number>\",\n  \"createdAt\": \"<dateTime>\"\n}"
+				},
+				{
+					"name": "Неверные данные запроса",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"<string>\",\n  \"zone\": \"<string>\",\n  \"aisle\": \"<string>\",\n  \"rack\": \"<string>\",\n  \"level\": \"<string>\",\n  \"position\": \"<string>\",\n  \"capacity\": \"<number>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"barcode\": \"<string>\",\n  \"zone\": \"<string>\",\n  \"aisle\": \"<string>\",\n  \"rack\": \"<string>\",\n  \"level\": \"<string>\",\n  \"position\": \"<string>\",\n  \"capacity\": \"<number>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": \"<string>\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Размещение товара на склад",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearerToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"locationId\": \"{{locationId}}\",\n  \"quantity\": \"10\"\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/inventory/invoices/:invoiceId/items/:itemId/place",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"inventory",
+						"invoices",
+						":invoiceId",
+						"items",
+						":itemId",
+						"place"
+					],
+					"variable": [
+						{
+							"key": "invoiceId",
+							"value": "{{invoiceid}}",
+							"description": "(Required) ID накладной"
+						},
+						{
+							"key": "itemId",
+							"value": "{{itemId1}}",
+							"description": "(Required) ID товара в накладной"
+						}
+					]
+				},
+				"description": "Размещает товар из приемки на указанную ячейку склада\n\n# Документация API для размещения товара на складе\n\n## `POST /wms/v1/inventory/invoices/:invoiceId/items/:itemId/place`\n\nЭтот эндпоинт используется для размещения конкретной позиции товара из накладной на складские локации.\n\n### Базовый URL\n\n```\nhttps://sklad.testerhub.ru\n\n ```\n\n### Авторизация\n\nТребуется JWT токен в заголовке:\n\n```\nAuthorization: Bearer <ваш_токен>\n\n ```\n\n## Параметры пути\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| invoiceId | string | Уникальный идентификатор накладной |\n| itemId | string | Идентификатор позиции в накладной |\n\n## Тело запроса (Request Body)\n\n``` json\n{\n  \"location_barcode\": \"string\",\n  \"quantity\": 0,\n  \"batch_number\": \"string\",\n  \"expiry_date\": \"string\",\n  \"placement_strategy\": \"string\",\n  \"operator_comment\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Обязательный | Описание |\n| --- | --- | --- | --- |\n| location_barcode | string | Да | Штрих-код целевой локации |\n| quantity | integer | Да | Количество для размещения |\n| batch_number | string | Нет | Номер партии |\n| expiry_date | string | Нет | Срок годности (YYYY-MM-DD) |\n| placement_strategy | string | Нет | Стратегия размещения (FIFO, LIFO, FEFO) |\n| operator_comment | string | Нет | Комментарий оператора |\n\n## Пример запроса\n\n``` bash\ncurl -X POST \"https://sklad.testerhub.ru/wms/v1/inventory/invoices/INV-12345/items/ITEM-678/place\" \\\n  -H \"Authorization: Bearer ваш_токен\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"location_barcode\": \"A-12-05\",\n    \"quantity\": 10,\n    \"batch_number\": \"BATCH-2023-11\",\n    \"expiry_date\": \"2025-11-01\",\n    \"placement_strategy\": \"FEFO\",\n    \"operator_comment\": \"Хрупкое, размещать на нижних полках\"\n  }'\n\n ```\n\n## Ответы (Responses)\n\n**Успешное размещение (200 OK):**\n\n``` json\n{\n  \"placement_id\": \"string\",\n  \"invoice_id\": \"string\",\n  \"item_id\": \"string\",\n  \"sku\": \"string\",\n  \"product_name\": \"string\",\n  \"location\": {\n    \"barcode\": \"string\",\n    \"zone\": \"string\",\n    \"path\": \"string\"\n  },\n  \"placed_quantity\": 0,\n  \"remaining_quantity\": 0,\n  \"batch_number\": \"string\",\n  \"expiry_date\": \"string\",\n  \"placement_time\": \"string\",\n  \"placed_by\": \"string\"\n}\n\n ```\n\n| Параметр | Тип | Описание |\n| --- | --- | --- |\n| placement_id | string | Уникальный ID операции размещения |\n| invoice_id | string | ID накладной |\n| item_id | string | ID позиции |\n| sku | string | Артикул товара |\n| product_name | string | Наименование товара |\n| location.barcode | string | Штрих-код локации |\n| location.zone | string | Зона размещения |\n| location.path | string | Полный путь локации |\n| placed_quantity | integer | Размещенное количество |\n| remaining_quantity | integer | Остаток к размещению |\n| batch_number | string | Номер партии |\n| expiry_date | string | Срок годности |\n| placement_time | string | Время размещения (ISO 8601) |\n| placed_by | string | ID пользователя |\n\n**Ошибки:**\n\n| Код состояния | Описание |\n| --- | --- |\n| 400 | Неверные параметры запроса |\n| 401 | Требуется авторизация |\n| 403 | Нет прав на операцию |\n| 404 | Накладная, позиция или локация не найдены |\n| 409 | Конфликт (недостаточно места и т.д.) |\n| 422 | Неверное количество |\n| 500 | Внутренняя ошибка сервера |\n\n## Дополнительная информация\n\n1. **Стратегии размещения**:\n    \n    - `FIFO` (First In, First Out) - первым пришел, первым ушел\n        \n    - `LIFO` (Last In, First Out) - последним пришел, первым ушел\n        \n    - `FEFO` (First Expired, First Out) - первым истекает срок, первым уходит\n        \n2. **Особенности работы**:\n    \n    - Если количество превышает доступное на складе, вернется ошибка 422\n        \n    - При нехватке места на указанной локации можно получить альтернативные предложения в ответе\n        \n    - Для товаров с обязательным сроком годности нужно указывать expiry_date\n        \n3. **Рекомендации**:\n    \n    - Перед размещением проверяйте доступность локации через GET /locations/{barcode}\n        \n    - Для массового размещения используйте batch-операции\n        \n    - При работе с опасными грузами проверяйте ограничения локации"
+			},
+			"response": [
+				{
+					"name": "Товар успешно размещен",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"locationId\": \"<string>\",\n  \"quantity\": \"<number>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/inventory/invoices/:invoiceId/items/:itemId/place",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								"invoices",
+								":invoiceId",
+								"items",
+								":itemId",
+								"place"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"inventory\": {\n    \"sku\": \"<string>\",\n    \"quantity\": \"<number>\",\n    \"locationId\": \"<string>\"\n  },\n  \"location\": {\n    \"_id\": \"<string>\",\n    \"barcode\": \"<string>\",\n    \"zone\": \"<string>\",\n    \"aisle\": \"<string>\",\n    \"rack\": \"<string>\",\n    \"level\": \"<string>\",\n    \"position\": \"<string>\",\n    \"status\": \"available\",\n    \"capacity\": \"<number>\",\n    \"usedCapacity\": \"<number>\",\n    \"createdAt\": \"<dateTime>\"\n  }\n}"
+				},
+				{
+					"name": "Неверные данные запроса",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"locationId\": \"<string>\",\n  \"quantity\": \"<number>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/inventory/invoices/:invoiceId/items/:itemId/place",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								"invoices",
+								":invoiceId",
+								"items",
+								":itemId",
+								"place"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Накладная, товар или ячейка не найдены",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"locationId\": \"<string>\",\n  \"quantity\": \"<number>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/inventory/invoices/:invoiceId/items/:itemId/place",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								"invoices",
+								":invoiceId",
+								"items",
+								":itemId",
+								"place"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "Ошибка сервера",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <token>",
+								"description": "Added as a part of security scheme: bearer"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"locationId\": \"<string>\",\n  \"quantity\": \"<number>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/inventory/invoices/:invoiceId/items/:itemId/place",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								"invoices",
+								":invoiceId",
+								"items",
+								":itemId",
+								"place"
+							],
+							"variable": [
+								{
+									"key": "invoiceId"
+								},
+								{
+									"key": "itemId"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "invoiceNumber",
+			"value": ""
+		},
+		{
+			"key": "items",
+			"value": ""
+		},
+		{
+			"key": "Barcode",
+			"value": ""
+		},
+		{
+			"key": "invoiceid",
+			"value": ""
+		},
+		{
+			"key": "itemId1",
+			"value": ""
+		},
+		{
+			"key": "barcode1",
+			"value": ""
+		},
+		{
+			"key": "placementCartId",
+			"value": ""
+		},
+		{
+			"key": "barcodeCell",
+			"value": ""
+		},
+		{
+			"key": "positionCell",
+			"value": ""
+		},
+		{
+			"key": "locationId",
+			"value": ""
+		}
+	]
+}
